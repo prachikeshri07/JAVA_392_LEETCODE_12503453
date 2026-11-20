@@ -1,0 +1,76 @@
+// LeetCode 273 - Integer to English Words (Hard)
+// Convert a non-negative integer into its English words representation.
+// Time: O(1) for the fixed 32-bit integer range | Space: O(1)
+
+class Solution {
+    private final String[] belowTwenty = {
+        "", "One", "Two", "Three", "Four", "Five", "Six", "Seven",
+        "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen",
+        "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen",
+        "Nineteen"
+    };
+
+    private final String[] tens = {
+        "", "Ten", "Twenty", "Thirty", "Forty", "Fifty",
+        "Sixty", "Seventy", "Eighty", "Ninety"
+    };
+
+    private final String[] thousands = {
+        "", "Thousand", "Million", "Billion"
+    };
+
+    public String numberToWords(int num) {
+        if (num == 0) {
+            return "Zero";
+        }
+
+        StringBuilder result = new StringBuilder();
+        int group = 0;
+
+        while (num > 0) {
+            int part = num % 1000;
+
+            if (part != 0) {
+                String words = convertBelowThousand(part);
+                if (!thousands[group].isEmpty()) {
+                    words += " " + thousands[group];
+                }
+
+                if (result.length() == 0) {
+                    result.insert(0, words);
+                } else {
+                    result.insert(0, words + " ");
+                }
+            }
+
+            num /= 1000;
+            group++;
+        }
+
+        return result.toString().trim();
+    }
+
+    private String convertBelowThousand(int num) {
+        StringBuilder result = new StringBuilder();
+
+        if (num >= 100) {
+            result.append(belowTwenty[num / 100]).append(" Hundred");
+            num %= 100;
+            if (num > 0) {
+                result.append(" ");
+            }
+        }
+
+        if (num >= 20) {
+            result.append(tens[num / 10]);
+            num %= 10;
+            if (num > 0) {
+                result.append(" ").append(belowTwenty[num]);
+            }
+        } else if (num > 0) {
+            result.append(belowTwenty[num]);
+        }
+
+        return result.toString();
+    }
+}
